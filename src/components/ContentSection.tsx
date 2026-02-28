@@ -8,15 +8,14 @@ interface ContentSectionProps {
   points: string[];
   icon: LucideIcon;
   index: number;
-  alt?: boolean;
 }
 
-export default function ContentSection({ id, badge, title, points, icon: Icon, index, alt }: ContentSectionProps) {
+export default function ContentSection({ id, badge, title, points, icon: Icon, index }: ContentSectionProps) {
   const isEven = index % 2 === 0;
 
   return (
-    <section id={id} className={`py-24 sm:py-32 ${alt ? "bg-section-alt" : ""}`}>
-      <div className="max-w-6xl mx-auto px-6">
+    <section id={id} className={`min-h-screen flex items-center ${isEven ? "" : "bg-section-alt"}`}>
+      <div className="max-w-6xl mx-auto px-6 py-20 w-full">
         <div className={`flex flex-col ${isEven ? "lg:flex-row" : "lg:flex-row-reverse"} items-center gap-12 lg:gap-20`}>
           {/* Icon block */}
           <motion.div
