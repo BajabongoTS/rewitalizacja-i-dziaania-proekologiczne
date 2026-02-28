@@ -1,53 +1,62 @@
-import { useState, useCallback, useEffect } from "react";
+import SiteNav from "@/components/SiteNav";
+import HeroSection from "@/components/HeroSection";
+import ContentSection from "@/components/ContentSection";
+import PresentationSection from "@/components/PresentationSection";
+import Footer from "@/components/Footer";
 import { slides } from "@/data/slides";
-import SlideView from "@/components/SlideView";
-import SlideThumbnails from "@/components/SlideThumbnails";
-import { Link } from "react-router-dom";
-import { FileText, Leaf } from "lucide-react";
+import { slideIcons } from "@/data/slideIcons";
+import { Leaf } from "lucide-react";
+
+const contentSlides = slides.filter(s => s.type === "content" && s.points);
 
 const Index = () => {
-  const [current, setCurrent] = useState(0);
-
-  const goNext = useCallback(() => setCurrent(c => Math.min(c + 1, slides.length - 1)), []);
-  const goPrev = useCallback(() => setCurrent(c => Math.max(c - 1, 0)), []);
-
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); goNext(); }
-      if (e.key === "ArrowLeft") { e.preventDefault(); goPrev(); }
-    };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, [goNext, goPrev]);
+  // Split content into two groups for nav anchors
+  const rewitalizacjaSlides = contentSlides.slice(0, 5); // slides 2-6
+  const ekologiaSlides = contentSlides.slice(5); // slides 7-12
 
   return (
-    <div className="flex flex-col h-screen bg-background">
-      {/* Top bar */}
-      <header className="flex items-center justify-between px-6 py-3 border-b border-border bg-card">
-        <div className="flex items-center gap-2">
-          <Leaf className="w-5 h-5 text-primary" />
-          <span className="font-bold text-foreground text-sm">Rewitalizacja i działania proekologiczne</span>
-        </div>
-        <Link to="/notatki"
-          className="flex items-center gap-2 text-sm font-semibold text-primary hover:text-primary/80 transition">
-          <FileText className="w-4 h-4" />
-          Notatki
-        </Link>
-      </header>
+    <div className="min-h-screen bg-background">
+      <SiteNav />
+      <HeroSection />
 
-      {/* Slide area */}
-      <div className="flex-1 overflow-hidden">
-        <SlideView
-          slide={slides[current]}
-          current={current}
-          total={slides.length}
-          onPrev={goPrev}
-          onNext={goNext}
-        />
+      {/* Rewitalizacja sections */}
+      <div id="rewitalizacja">
+        {rewitalizacjaSlides.map((slide, i) => {
+          const Icon = slideIcons[slide.id] || Leaf;
+          return (
+            <ContentSection
+              key={slide.id}
+              badge={`Rewitalizacja · ${i + 1}`}
+              title={slide.title}
+              points={slide.points!}
+              icon={Icon}
+              index={i}
+              alt={i % 2 === 1}
+            />
+          );
+        })}
       </div>
 
-      {/* Thumbnails */}
-      <SlideThumbnails current={current} onSelect={setCurrent} />
+      {/* Ekologia sections */}
+      <div id="ekologia">
+        {ekologiaSlides.map((slide, i) => {
+          const Icon = slideIcons[slide.id] || Leaf;
+          return (
+            <ContentSection
+              key={slide.id}
+              badge={`Ekologia · ${i + 1}`}
+              title={slide.title}
+              points={slide.points!}
+              icon={Icon}
+              index={i + rewitalizacjaSlides.length}
+              alt={(i + rewitalizacjaSlides.length) % 2 === 1}
+            />
+          );
+        })}
+      </div>
+
+      <PresentationSection />
+      <Footer />
     </div>
   );
 };
