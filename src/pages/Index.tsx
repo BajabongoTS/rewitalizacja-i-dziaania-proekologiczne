@@ -7,8 +7,8 @@ import { slideIcons } from "@/data/slideIcons";
 import { Leaf } from "lucide-react";
 
 const contentSlides = slides.filter(s => s.type === "content" && s.points);
-const rewitalizacjaSlides = contentSlides.slice(0, 5);
-const ekologiaSlides = contentSlides.slice(5);
+const rewitalizacjaSlides = contentSlides.slice(0, 6);
+const ekologiaSlides = contentSlides.slice(6);
 
 const Index = () => {
   return (
