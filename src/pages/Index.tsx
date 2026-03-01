@@ -7,8 +7,11 @@ import { slideIcons } from "@/data/slideIcons";
 import { Leaf } from "lucide-react";
 
 const contentSlides = slides.filter(s => s.type === "content" && s.points);
-const rewitalizacjaSlides = contentSlides.slice(0, 6);
-const ekologiaSlides = contentSlides.slice(6);
+const allSlides = contentSlides.map((slide, i) => ({
+  ...slide,
+  sectionId: `slide-${slide.id}`,
+  badge: i < 7 ? `Rewitalizacja · ${i + 1}` : `Ekologia · ${i - 6}`,
+}));
 
 const Index = () => {
   return (
@@ -17,32 +20,44 @@ const Index = () => {
       <HeroSection />
 
       <div id="rewitalizacja">
-        {rewitalizacjaSlides.map((slide, i) => {
+        {allSlides.filter((_, i) => i < 7).map((slide, i) => {
           const Icon = slideIcons[slide.id] || Leaf;
+          const globalIdx = i;
           return (
             <ContentSection
               key={slide.id}
-              badge={`Rewitalizacja · ${i + 1}`}
+              id={slide.sectionId}
+              badge={slide.badge}
               title={slide.title}
               points={slide.points!}
               icon={Icon}
-              index={i}
+              index={globalIdx}
+              prevSlideId={globalIdx > 0 ? allSlides[globalIdx - 1].sectionId : undefined}
+              nextSlideId={globalIdx < allSlides.length - 1 ? allSlides[globalIdx + 1].sectionId : undefined}
+              prevSlideTitle={globalIdx > 0 ? allSlides[globalIdx - 1].title : undefined}
+              nextSlideTitle={globalIdx < allSlides.length - 1 ? allSlides[globalIdx + 1].title : undefined}
             />
           );
         })}
       </div>
 
       <div id="ekologia">
-        {ekologiaSlides.map((slide, i) => {
+        {allSlides.filter((_, i) => i >= 7).map((slide, i) => {
           const Icon = slideIcons[slide.id] || Leaf;
+          const globalIdx = i + 7;
           return (
             <ContentSection
               key={slide.id}
-              badge={`Ekologia · ${i + 1}`}
+              id={slide.sectionId}
+              badge={slide.badge}
               title={slide.title}
               points={slide.points!}
               icon={Icon}
-              index={i + rewitalizacjaSlides.length}
+              index={globalIdx}
+              prevSlideId={globalIdx > 0 ? allSlides[globalIdx - 1].sectionId : undefined}
+              nextSlideId={globalIdx < allSlides.length - 1 ? allSlides[globalIdx + 1].sectionId : undefined}
+              prevSlideTitle={globalIdx > 0 ? allSlides[globalIdx - 1].title : undefined}
+              nextSlideTitle={globalIdx < allSlides.length - 1 ? allSlides[globalIdx + 1].title : undefined}
             />
           );
         })}
